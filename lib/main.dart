@@ -114,22 +114,30 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Expanded(
             child: Container(
-              margin: EdgeInsets.all(20.0),
+              margin: EdgeInsets.all(15.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    child: Container(
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: primaryBrown,
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Text(
-                        'Brew methods',
-                        style: kButtonLatoStyle,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => MyBrews()),
+                        );
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: primaryBrown,
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Text(
+                          'My brews',
+                          style: kButtonLatoStyle,
+                        ),
                       ),
                     ),
                   ),
@@ -181,7 +189,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     Container(
                       margin: EdgeInsets.only(top: 5),
                       child: Column(
-
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
@@ -194,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Row(
                             children: <Widget>[
                               Icon(
-                                FontAwesomeIcons.hourglassHalf
+                                  FontAwesomeIcons.hourglassHalf
                               ),
                               Text(
                                 '  3 min 40 sec',
@@ -266,14 +273,14 @@ class _MyHomePageState extends State<MyHomePage> {
             title: Text('HOME'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.userNinja),
+            icon: Icon(FontAwesomeIcons.user),
             title: Text('PROFILE'),
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              FontAwesomeIcons.award,
+              FontAwesomeIcons.cogs,
             ),
-            title: Text('RANKING'),
+            title: Text('SETTINGS'),
           ),
         ],
         currentIndex: _selectedIndex,
