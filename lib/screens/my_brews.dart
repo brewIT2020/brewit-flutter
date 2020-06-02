@@ -1,41 +1,10 @@
-import 'package:brewit/brews_brain.dart';
-import 'package:brewit/ranking.dart';
+import 'package:brewit/services/brews_brain.dart';
+import 'package:brewit/components/bottom_navigation_bar_configured.dart';
+import 'package:brewit/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import 'brew.dart';
-import 'main.dart';
-
-const Color primaryBrown = Color(0xFFa35638);
-const Color secondaryBrown = Color(0xFFe08f62);
-const Color backgroundLight = Color(0xFFd7c79e);
-const Color green = Color(0xFF9dab86);
-
-const labelFontSize = 30.0;
-const infoFontSize = 30.0;
-const buttonFontSize = 25.0;
-const parametersFontSize = 20.0;
-
-TextStyle klabelLatoStyle = GoogleFonts.lato(
-  color: primaryBrown,
-  fontSize: labelFontSize,
-);
-
-TextStyle coffeeOfTheDayStyle = GoogleFonts.lato(
-  color: primaryBrown,
-  fontSize: infoFontSize,
-);
-
-TextStyle kButtonLatoStyle = GoogleFonts.lato(
-  color: backgroundLight,
-  fontSize: buttonFontSize,
-);
-
-TextStyle kLastBrewLatoStyle = GoogleFonts.lato(
-  color: backgroundLight,
-  fontSize: parametersFontSize,
-);
+import '../models/brew.dart';
 
 class MyBrewsPage extends StatelessWidget {
   @override
@@ -77,49 +46,8 @@ class _MyBrewsState extends State<MyBrews> {
           print("Hello!");
         },
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              FontAwesomeIcons.home,
-            ),
-            title: Text('HOME'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.userNinja),
-            title: Text('PROFILE'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              FontAwesomeIcons.award,
-            ),
-            title: Text('RANKING'),
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Color(0xFFe5dad0),
-        onTap: (int index) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) {
-              if (index == 1) {
-                return MyBrewsPage();
-              }
-              if (index == 2) {
-                return RankingPage();
-              }
-              return MyHomePage();
-            }),
-          );
-        },
-        backgroundColor: Color(0xFF8b543c),
-        selectedIconTheme: IconThemeData().copyWith(
-          color: Color(0xFFe5dad0),
-        ),
-        unselectedIconTheme: IconThemeData().copyWith(
-          color: Colors.black54,
-        ),
-        unselectedItemColor: Colors.black54,
+      bottomNavigationBar: BottomNavigationBarConfigured(
+        selectedIndex: 1,
       ),
     );
   }

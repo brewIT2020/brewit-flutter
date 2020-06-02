@@ -1,4 +1,4 @@
-import 'brew.dart';
+import '../models/brew.dart';
 
 class BrewsBrain {
   List<Brew> brews = [
