@@ -29,6 +29,7 @@ class _NewBrewPageState extends State<NewBrewPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+
           Expanded(
             flex: 2,
             child: ClipPath(
@@ -52,22 +53,21 @@ class _NewBrewPageState extends State<NewBrewPage> {
                     Icon(
                       FontAwesomeIcons.camera,
                     ),
-                    Text(
-                      "Add photo"
-                    )
+                    Text("Add photo")
                   ],
                 ),
               ),
             ),
           ),
           Expanded(
+            flex: 2,
             child: Container(
               padding: EdgeInsets.all(5),
               child: Timer(),
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: 3,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -95,9 +95,24 @@ class _NewBrewPageState extends State<NewBrewPage> {
             ),
           ),
           Expanded(
-            flex: 1,
-            child: SliderPropertyCard(),
+            flex: 3,
+            child: Container(
+              padding: EdgeInsets.all(5),
+              child: SliderPropertyCard(),
+            ),
           ),
+          Expanded(
+            child: GestureDetector(
+              child: Container(
+                child: Center(
+                  child: Text(
+                    "CREATE BREW!",
+                  ),
+                ),
+                color: primaryBrown,
+              ),
+            ),
+          )
         ],
       ),
       bottomNavigationBar: BottomNavigationBarConfigured(
@@ -108,29 +123,13 @@ class _NewBrewPageState extends State<NewBrewPage> {
 }
 
 class SliderPropertyCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
-
-class PropertyCard extends StatelessWidget {
-  final String propertyName;
-  final int propertyValue;
-  final String unit;
-
-  static const double width = 56.0;
-  static const double height = 56.0;
-  //We need to add property on pressed function
-
-  PropertyCard({this.propertyName, this.propertyValue, this.unit});
-
+  static const int fluidVolume = 300;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.all(15),
+      padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topRight,
@@ -146,11 +145,79 @@ class PropertyCard extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.all(15),
+            padding: EdgeInsets.all(5),
+            child: Text(
+              "Fluid volume"
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(5),
+            child: Text(
+              fluidVolume.toString() + "ml"
+            ),
+          ),
+          SliderTheme(
+            data: SliderTheme.of(context).copyWith(
+              inactiveTrackColor: secondaryBrown,
+              activeTrackColor: Colors.white,
+              thumbColor: primaryBrown,
+              overlayColor: Color(0x29EB1555),
+              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 15.0),
+              overlayShape: RoundSliderOverlayShape(overlayRadius: 30.0),
+            ),
+            child: Slider(
+              label: "Fluid Volume",
+              value: fluidVolume.toDouble(),
+              min: 50.0,
+              max: 650.0,
+              onChanged: (double newValue) {
+                setState() {}
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PropertyCard extends StatelessWidget {
+  final String propertyName;
+  final int propertyValue;
+  final String unit;
+
+  static const double width = 56.0;
+  static const double height = 56.0;
+
+  //We need to add property on pressed function
+
+  PropertyCard({this.propertyName, this.propertyValue, this.unit});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomRight,
+          colors: [
+            primaryBrown,
+            secondaryBrown,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(10.0),
+        boxShadow: kElevationToShadow[1],
+      ),
+      child: Column(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.all(10),
             child: Text(propertyName),
           ),
           Container(
-            padding: EdgeInsets.all(15),
+            padding: EdgeInsets.all(10),
             child: Text(
               propertyValue.toString() + ' $unit',
             ),
@@ -173,7 +240,7 @@ class PropertyCard extends StatelessWidget {
                 icon: FontAwesomeIcons.plus,
               ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -220,7 +287,7 @@ class Timer extends StatelessWidget {
               height: 60.0,
               icon: FontAwesomeIcons.play,
             ),
-          )
+          ),
         ],
       ),
     );
@@ -231,9 +298,9 @@ class PhotoClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     var path = Path();
-    path.lineTo(0, size.height - 45);
+    path.lineTo(0, size.height - 35);
     path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 45);
+        size.width / 2, size.height + 30, size.width, size.height - 35);
     path.lineTo(size.width, 0);
     path.close();
     return path;

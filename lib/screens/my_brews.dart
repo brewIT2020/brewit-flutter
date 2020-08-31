@@ -20,6 +20,19 @@ class MyBrews extends StatefulWidget {
 
 class _MyBrewsState extends State<MyBrews> {
   int _selectedIndex = 0;
+  List<Brew> brews;
+
+  @override
+  void initState() {
+    super.initState();
+    BrewsBrain().fetchBrews().then((value) {
+      setState(() {
+        brews = value;
+      });
+    }, onError: (e) {
+      print(e);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +43,10 @@ class _MyBrewsState extends State<MyBrews> {
       ),
       body: SafeArea(
         child: Container(
-          child: ListView(
+          child: brews == null ? Text('Loading...') : ListView(
             shrinkWrap: true,
             padding: const EdgeInsets.all(10.0),
-            children: createBrewsList(),
+            children: createBrewsList(brews),
           ),
         ),
       ),
@@ -53,10 +66,10 @@ class _MyBrewsState extends State<MyBrews> {
   }
 }
 
-List<Widget> createBrewsList() {
+List<Widget> createBrewsList(List<Brew> brews) {
   final List<Widget> widgetsBrewList = List();
 
-  for (final Brew brew in BrewsBrain().brews) {
+  for (Brew brew in brews) {
     final Widget brewCard = Container(
       child: Card(
         color: Color(0xFFa35638),
@@ -76,7 +89,10 @@ List<Widget> createBrewsList() {
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      Icon(FontAwesomeIcons.hourglassHalf),
+                      Icon(
+                        FontAwesomeIcons.hourglassHalf,
+                        size: 15.0,
+                      ),
                       Text(
                         brew.time.toString() + " min",
                         style: kLastBrewLatoStyle,
@@ -88,7 +104,10 @@ List<Widget> createBrewsList() {
                   ),
                   Row(
                     children: <Widget>[
-                      Icon(FontAwesomeIcons.water),
+                      Icon(
+                        FontAwesomeIcons.water,
+                        size: 15.0,
+                      ),
                       Text(
                         '  500 ml',
                         style: kLastBrewLatoStyle,
@@ -100,7 +119,10 @@ List<Widget> createBrewsList() {
                   ),
                   Row(
                     children: <Widget>[
-                      Icon(FontAwesomeIcons.weight),
+                      Icon(
+                        FontAwesomeIcons.weight,
+                        size: 15,
+                      ),
                       Text(
                         brew.weight.toString() + ' gram',
                         style: kLastBrewLatoStyle,
@@ -112,7 +134,10 @@ List<Widget> createBrewsList() {
                   ),
                   Row(
                     children: <Widget>[
-                      Icon(FontAwesomeIcons.thermometerEmpty),
+                      Icon(
+                        FontAwesomeIcons.thermometerEmpty,
+                        size: 15,
+                      ),
                       Text(
                         brew.temperature.toString() + ' °C',
                         style: kLastBrewLatoStyle,

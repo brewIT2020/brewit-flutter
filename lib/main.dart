@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         backgroundColor: backgroundLight,
         scaffoldBackgroundColor: backgroundLight,
       ),
-      home: NewBrew(),
+      home: MyHomePage(),
     );
   }
 }
@@ -147,23 +147,31 @@ class _MyHomePageState extends State<MyHomePage> {
                       width: 25,
                     ),
                     Expanded(
-                      child: Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topRight,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              primaryBrown,
-                              secondaryBrown,
-                            ],
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => NewBrew()),
+                          );
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topRight,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                primaryBrown,
+                                secondaryBrown,
+                              ],
+                            ),
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(30),
                           ),
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Text(
-                          'Start Brewing!',
-                          style: kButtonLatoStyle,
+                          child: Text(
+                            'Start Brewing!',
+                            style: kButtonLatoStyle,
+                          ),
                         ),
                       ),
                     ),
