@@ -14,7 +14,7 @@ description: Brewit app
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -28,6 +28,8 @@ dependencies:
   animated_text_kit: ^2.0.1
   google_fonts: ^1.0.0
   flutter_svg: ^0.17.4
+  url_launcher: ^5.6.0
+  gradient_bottom_navigation_bar: ^1.0.0+4
 
 dev_dependencies:
   flutter_test:

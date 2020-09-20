@@ -7,10 +7,11 @@ class Brew {
   String coffee;
   int temperature;
   int time;
+  int volume;
   int weight;
   String description;
 
-  Brew({@required this.coffee, this.temperature, this.time, this.weight, this.description});
+  Brew({@required this.coffee, this.temperature, this.time, this.volume, this.weight, this.description});
 
   factory Brew.fromDto(BrewDto dto) {
     return Brew(
@@ -18,7 +19,8 @@ class Brew {
       description: dto.description,
       weight: dto.weight,
       time: dto.time,
-      temperature: dto.temp
+      volume: dto.volume,
+      temperature: dto.temp,
     );
   }
 }

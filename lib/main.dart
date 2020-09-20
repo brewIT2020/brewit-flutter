@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart' as luncher;
 
 import 'components/bottom_navigation_bar_configured.dart';
 import 'constants.dart';
@@ -51,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'brewIT',
+            'Brewit',
           ),
           centerTitle: true,
         ),
@@ -60,50 +61,56 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             ClipPath(
               clipper: HomeClipper(),
-              child: Container(
-                height: 175,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                    colors: [
-                      primaryBrown,
-                      secondaryBrown,
-                    ],
+              child: GestureDetector(
+                onTap: () async {
+                  const url = 'https://brewit.online';
+                  await _launchInBrowser(url);
+                },
+                child: Container(
+                  height: 175,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomLeft,
+                      colors: [
+                        primaryBrown,
+                        secondaryBrown,
+                      ],
+                    ),
                   ),
-                ),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        child: TypewriterAnimatedTextKit(
-                          onTap: () {
-                            print("Tap Event");
-                          },
-                          text: [
-                            'Today your coffee is.',
-                            "Arabica.",
-                            'Click here for more!'
-                          ],
-                          textStyle: coffeeOfTheDayStyle,
-                          textAlign: TextAlign.start,
-                          alignment: AlignmentDirectional.topStart,
-                          // or Alignment.topLeft
-                          speed: Duration(
-                            milliseconds: 120,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          child: TypewriterAnimatedTextKit(
+                            onTap: () {
+                              print("Tap Event");
+                            },
+                            text: [
+                              'Today your coffee is.',
+                              "Arabica.",
+                              'Click here for more!'
+                            ],
+                            textStyle: coffeeOfTheDayStyle,
+                            textAlign: TextAlign.start,
+                            alignment: AlignmentDirectional.topStart,
+                            // or Alignment.topLeft
+                            speed: Duration(
+                              milliseconds: 120,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.all(15),
-                        child: SvgPicture.asset('svgs/cup-of-coffee.svg'),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.all(15),
+                          child: SvgPicture.asset('svgs/cup-of-coffee.svg'),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -278,6 +285,19 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
+  Future<void> _launchInBrowser(String url) async {
+    if (await luncher.canLaunch(url)) {
+      await luncher.launch(
+        url,
+        forceSafariVC: false,
+        forceWebView: false,
+        headers: <String, String>{'my_header_key': 'my_header_value'},
+      );
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 }
 
 class HomeClipper extends CustomClipper<Path> {
@@ -285,7 +305,8 @@ class HomeClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     var path = Path();
     path.lineTo(0, size.height - 30);
-    path.quadraticBezierTo(size.width/2, size.height, size.width, size.height);
+    path.quadraticBezierTo(
+        size.width / 2, size.height, size.width, size.height);
     path.lineTo(size.width, 0);
     path.close();
     return path;

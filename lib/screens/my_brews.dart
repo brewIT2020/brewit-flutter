@@ -1,7 +1,9 @@
-import 'package:brewit/services/brews_brain.dart';
 import 'package:brewit/components/bottom_navigation_bar_configured.dart';
 import 'package:brewit/constants.dart';
+import 'package:brewit/screens/new_brew.dart';
+import 'package:brewit/services/brews_brain.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../models/brew.dart';
@@ -39,15 +41,39 @@ class _MyBrewsState extends State<MyBrews> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("My brews"),
+        title: Text("My Brews"),
       ),
       body: SafeArea(
         child: Container(
-          child: brews == null ? Text('Loading...') : ListView(
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(10.0),
-            children: createBrewsList(brews),
-          ),
+          alignment: Alignment.center,
+          child: brews == null
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 60,
+                      width: 60,
+                      child: CircularProgressIndicator(
+                        valueColor:
+                            new AlwaysStoppedAnimation<Color>(secondaryBrown),
+                        backgroundColor: primaryBrown,
+                        strokeWidth: 10,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Text(
+                      "Loading...",
+                      style: TextStyle(color: primaryBrown),
+                    ),
+                  ],
+                )
+              : ListView(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(10.0),
+                  children: createBrewsList(brews),
+                ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -56,7 +82,10 @@ class _MyBrewsState extends State<MyBrews> {
           FontAwesomeIcons.plus,
         ),
         onPressed: () {
-          print("Hello!");
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NewBrew()),
+          );
         },
       ),
       bottomNavigationBar: BottomNavigationBarConfigured(
@@ -79,7 +108,8 @@ List<Widget> createBrewsList(List<Brew> brews) {
             ListTile(
               leading: Icon(FontAwesomeIcons.coffee),
               title: Text(brew.coffee),
-              subtitle: Text(brew.description),
+              subtitle:
+                  Text(brew.description != null ? brew.description : "Unknown"),
             ),
             Container(
               margin: EdgeInsets.only(bottom: 10, left: 5, right: 5, top: 5),

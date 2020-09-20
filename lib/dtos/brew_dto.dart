@@ -23,6 +23,8 @@
 //"public": false
 //}
 
+import 'package:brewit/models/brew.dart';
+
 class BrewDto {
   final String id;
   final String productName;
@@ -30,23 +32,51 @@ class BrewDto {
   final int time;
   final int volume;
   final int weight;
+
 //  final LocalDate localDate;
   final String description;
   final bool public;
 
-  BrewDto({this.id, this.productName, this.temp, this.time, this.volume,
-      this.weight, this.description, this.public});
+  BrewDto(
+      {this.id,
+      this.productName,
+      this.temp,
+      this.time,
+      this.volume,
+      this.weight,
+      this.description,
+      this.public});
 
   factory BrewDto.fromJson(Map<String, dynamic> json) {
     return BrewDto(
-      id: json['id'],
-      productName: json['productName'],
-      temp: json['temp'],
-      time: json['time'],
-      volume: json['volume'],
-      weight: json['weight'],
-      description: json['description'],
-      public: json['public']
-    );
+        id: json['id'],
+        productName: json['productName'],
+        temp: json['temp'],
+        time: json['time'],
+        volume: json['volume'],
+        weight: json['weight'],
+        description: json['description'],
+        public: json['public']);
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'productName': productName,
+        'temp': temp,
+        'time': time,
+        'volume': volume,
+        'weight': weight,
+        'description': description,
+        'public': public,
+      };
+
+  factory BrewDto.fromModel(Brew brew) {
+    return BrewDto(
+        productName: brew.coffee,
+        temp: brew.temperature,
+        description: brew.description,
+        volume: brew.volume,
+        time: brew.time,
+        weight: brew.weight);
   }
 }

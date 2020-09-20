@@ -25,7 +25,7 @@ class BrewsBrain {
       // Send authorization headers to the backend.
       headers: {
         HttpHeaders.authorizationHeader:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyIkaW50X3Blcm1zIjpbXSwic3ViIjoib3JnLnBhYzRqLmNvcmUucHJvZmlsZS5Db21tb25Qcm9maWxlI2I0NDg5OGM0LWVkN2YtNGQzOC1hMTExLTFjN2ZlZjAyOTE1NCIsIiRpbnRfcm9sZXMiOlsiVVNFUiJdLCJleHAiOjE1OTUxNjkwNTgsImlhdCI6MTU5MjU3NzYxNywiZW1haWwiOiJrYW1pbHRlc3R1amUxQGthbWlsLnBsIiwidXNlcm5hbWUiOiJrYW1pbHRlc3R1amUxIn0.7pdgALw6S_EWUrV263eWEuxTqB0P16a-4dbQpynj8gQ"
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyIkaW50X3Blcm1zIjpbXSwic3ViIjoib3JnLnBhYzRqLmNvcmUucHJvZmlsZS5Db21tb25Qcm9maWxlIzkzMzA4OTA1LTQ3MGItNDU1Mi1hN2FlLTJlYzdjMzY5NWZkZiIsIiRpbnRfcm9sZXMiOlsiVVNFUiJdLCJleHAiOjE2MDMxMTA2NTYsImlhdCI6MTYwMDUyMDMzNiwiZW1haWwiOiJrYW1pbHRlc3RAa2FtaWwucGwiLCJ1c2VybmFtZSI6ImthbWlsdGVzdCJ9.hbGwRan6jv_rukvsXVsW-GYy_3XxKitHYwiVdtqhbuY"
       },
     );
 
@@ -42,7 +42,31 @@ class BrewsBrain {
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
-      throw Exception('Failed to load album');
+      throw Exception('Failed to fetch Brews from the server!');
+    }
+  }
+
+  Future<void> sendBrew(Brew brew) async {
+    BrewDto brewDto = BrewDto.fromModel(brew);
+    final response = await http.post(
+      'http://10.0.2.2:7000/brews',
+      // Send authorization headers to the backend.
+      headers: {
+        HttpHeaders.authorizationHeader:
+        "Bearer eyJhbGciOiJIUzI1NiJ9.eyIkaW50X3Blcm1zIjpbXSwic3ViIjoib3JnLnBhYzRqLmNvcmUucHJvZmlsZS5Db21tb25Qcm9maWxlIzkzMzA4OTA1LTQ3MGItNDU1Mi1hN2FlLTJlYzdjMzY5NWZkZiIsIiRpbnRfcm9sZXMiOlsiVVNFUiJdLCJleHAiOjE2MDMxMTA2NTYsImlhdCI6MTYwMDUyMDMzNiwiZW1haWwiOiJrYW1pbHRlc3RAa2FtaWwucGwiLCJ1c2VybmFtZSI6ImthbWlsdGVzdCJ9.hbGwRan6jv_rukvsXVsW-GYy_3XxKitHYwiVdtqhbuY"
+      },
+      body: jsonEncode(brewDto),
+    );
+    String responseMsg;
+    if (response.statusCode != 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      responseMsg = response.body;
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw http.ClientException('Failed to send brew due to problem: $responseMsg');
     }
   }
 }

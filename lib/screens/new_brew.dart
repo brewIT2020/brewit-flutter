@@ -1,6 +1,9 @@
 import 'package:brewit/components/bottom_navigation_bar_configured.dart';
 import 'package:brewit/components/round_icon_button.dart';
 import 'package:brewit/constants.dart';
+import 'package:brewit/main.dart';
+import 'package:brewit/models/brew.dart';
+import 'package:brewit/services/brews_brain.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -19,17 +22,26 @@ class NewBrewPage extends StatefulWidget {
 }
 
 class _NewBrewPageState extends State<NewBrewPage> {
+  int _weight = 10;
+  int _temperature = 100;
+  int _volume = 300;
+  int _time = 0;
+  String _productName = "unknown";
+  String _description = "unknown";
+  String errorMsg;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("New brew"),
+        title: Text(
+          "New Brew",
+        ),
         centerTitle: true,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-
           Expanded(
             flex: 2,
             child: ClipPath(
@@ -63,7 +75,10 @@ class _NewBrewPageState extends State<NewBrewPage> {
             flex: 2,
             child: Container(
               padding: EdgeInsets.all(5),
-              child: Timer(),
+              child: Timer(
+                onTimerDurationChanged: (value) =>
+                    setState(() => _time = (value as Duration).inSeconds),
+              ),
             ),
           ),
           Expanded(
@@ -76,8 +91,10 @@ class _NewBrewPageState extends State<NewBrewPage> {
                     padding: EdgeInsets.all(5),
                     child: PropertyCard(
                       propertyName: "Weight",
-                      propertyValue: 10,
+                      propertyValue: _weight,
                       unit: "g",
+                      onPressMinus: () => setState(() => _weight--),
+                      onPressPlus: () => setState(() => _weight++),
                     ),
                   ),
                 ),
@@ -86,8 +103,10 @@ class _NewBrewPageState extends State<NewBrewPage> {
                     padding: EdgeInsets.all(5),
                     child: PropertyCard(
                       propertyName: "Temperature",
-                      propertyValue: 100,
+                      propertyValue: _temperature,
                       unit: "°C",
+                      onPressMinus: () => setState(() => _temperature--),
+                      onPressPlus: () => setState(() => _temperature++),
                     ),
                   ),
                 ),
@@ -98,18 +117,139 @@ class _NewBrewPageState extends State<NewBrewPage> {
             flex: 3,
             child: Container(
               padding: EdgeInsets.all(5),
-              child: SliderPropertyCard(),
+              child: SliderPropertyCard(
+                fluidVolume: _volume,
+                onChange: (newValue) => setState(() => _volume = newValue),
+              ),
             ),
           ),
           Expanded(
             child: GestureDetector(
+              onTap: () => showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return Dialog(
+                    elevation: 15,
+                    backgroundColor: secondaryBrown,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: StatefulBuilder(
+                      builder: (context, setState) {
+                        return Container(
+                          margin: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topRight,
+                              end: Alignment.bottomLeft,
+                              colors: [
+                                primaryBrown,
+                                secondaryBrown,
+                              ],
+                            ),
+                          ),
+                          height: 330,
+                          child: Container(
+                            margin: EdgeInsets.all(30),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text("What are you brewing today?"),
+                                TextField(
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(FontAwesomeIcons.coffee),
+                                    hoverColor: Colors.white60,
+                                    focusColor: Colors.white60,
+                                    fillColor: Colors.white60,
+                                  ),
+                                  autocorrect: true,
+                                  showCursor: true,
+                                  textAlign: TextAlign.center,
+                                  onChanged: (value) => _productName = value,
+                                  maxLength: 40,
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Text("Share your opinion about brew!"),
+                                TextField(
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(FontAwesomeIcons.bookOpen),
+                                    hoverColor: Colors.white60,
+                                    focusColor: Colors.white60,
+                                    fillColor: Colors.white60,
+                                  ),
+                                  onChanged: (value) => _description = value,
+                                  maxLength: 199,
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                RaisedButton(
+                                  child: Text(
+                                    "SUBMIT",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  elevation: 15,
+                                  visualDensity: VisualDensity.comfortable,
+                                  color: primaryBrown,
+                                  disabledColor: primaryBrown,
+                                  highlightColor: secondaryBrown,
+                                  hoverElevation: 10,
+                                  onPressed: () async {
+                                    await BrewsBrain()
+                                        .sendBrew(
+                                          Brew(
+                                            coffee: _productName,
+                                            description: _description,
+                                            weight: _weight,
+                                            time: _time,
+                                            volume: _volume,
+                                            temperature: _temperature,
+                                          ),
+                                        )
+                                        .catchError((onError) => {
+                                              errorMsg =
+                                                  "Ups, something goes wrong :(",
+                                              setState(() {}),
+                                            })
+                                        .then((value) {
+                                      errorMsg = null;
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MyHomePage()));
+                                    });
+                                  },
+                                ),
+                                if (errorMsg != null) Text(errorMsg),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
               child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                      primaryBrown,
+                      secondaryBrown,
+                    ],
+                  ),
+                ),
                 child: Center(
                   child: Text(
                     "CREATE BREW!",
                   ),
                 ),
-                color: primaryBrown,
               ),
             ),
           )
@@ -123,7 +263,10 @@ class _NewBrewPageState extends State<NewBrewPage> {
 }
 
 class SliderPropertyCard extends StatelessWidget {
-  static const int fluidVolume = 300;
+  final int fluidVolume;
+  final Function onChange;
+
+  SliderPropertyCard({@required this.onChange, @required this.fluidVolume});
 
   @override
   Widget build(BuildContext context) {
@@ -146,15 +289,11 @@ class SliderPropertyCard extends StatelessWidget {
         children: <Widget>[
           Container(
             padding: EdgeInsets.all(5),
-            child: Text(
-              "Fluid volume"
-            ),
+            child: Text("Fluid volume"),
           ),
           Container(
             padding: EdgeInsets.all(5),
-            child: Text(
-              fluidVolume.toString() + "ml"
-            ),
+            child: Text(fluidVolume.toString() + "ml"),
           ),
           SliderTheme(
             data: SliderTheme.of(context).copyWith(
@@ -171,7 +310,7 @@ class SliderPropertyCard extends StatelessWidget {
               min: 50.0,
               max: 650.0,
               onChanged: (double newValue) {
-                setState() {}
+                onChange(newValue.toInt());
               },
             ),
           ),
@@ -185,13 +324,20 @@ class PropertyCard extends StatelessWidget {
   final String propertyName;
   final int propertyValue;
   final String unit;
+  final Function onPressPlus;
+  final Function onPressMinus;
 
   static const double width = 56.0;
   static const double height = 56.0;
 
   //We need to add property on pressed function
 
-  PropertyCard({this.propertyName, this.propertyValue, this.unit});
+  PropertyCard(
+      {this.propertyName,
+      this.propertyValue,
+      this.unit,
+      @required this.onPressMinus,
+      @required this.onPressPlus});
 
   @override
   Widget build(BuildContext context) {
@@ -222,24 +368,26 @@ class PropertyCard extends StatelessWidget {
               propertyValue.toString() + ' $unit',
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              RoundIconButton(
-                width: width,
-                height: height,
-                color: primaryBrown,
-                onPressed: () {},
-                icon: FontAwesomeIcons.minus,
-              ),
-              RoundIconButton(
-                width: width,
-                height: height,
-                color: primaryBrown,
-                onPressed: () {},
-                icon: FontAwesomeIcons.plus,
-              ),
-            ],
+          GestureDetector(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                RoundIconButton(
+                  width: width,
+                  height: height,
+                  color: primaryBrown,
+                  onPressed: onPressMinus,
+                  icon: FontAwesomeIcons.minus,
+                ),
+                RoundIconButton(
+                  width: width,
+                  height: height,
+                  color: primaryBrown,
+                  onPressed: onPressPlus,
+                  icon: FontAwesomeIcons.plus,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -248,9 +396,10 @@ class PropertyCard extends StatelessWidget {
 }
 
 class Timer extends StatelessWidget {
-  const Timer({
-    Key key,
-  }) : super(key: key);
+  final Duration duration;
+  final Function onTimerDurationChanged;
+
+  Timer({@required this.duration, @required this.onTimerDurationChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -276,7 +425,9 @@ class Timer extends StatelessWidget {
             flex: 3,
             child: CupertinoTimerPicker(
               mode: CupertinoTimerPickerMode.ms,
-              onTimerDurationChanged: (value) {},
+              onTimerDurationChanged: (value) {
+                onTimerDurationChanged(value);
+              },
             ),
           ),
           Expanded(
